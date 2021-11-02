@@ -1,0 +1,19 @@
+{
+  "name": "baldini",
+  "version": "1.0.0",
+  "description": "nodic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "baldini",
+  "license": "ISC",
+  "dependencies": {
+    "@ffprobe-installer/ffprobe": "^1.2.0",
+    "get-video-duration": "^4.0.0",
+    "ytdl-core": "^4.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.6"
+  }
+}
