@@ -1,18 +1,29 @@
-import {VideoHandler} from "./videoHandler";
-import {VideoHandlerYouTube} from "./videoHandlerYouTube";
+import {VideoHandlerYouTube} from "./VideoHandlerYouTube";
+import {VideoHandlerLocalFile} from "./VideoHandlerLocalFile";
 
 //let myURL = 'https://www.youtube.com/watch?v=nyIpDs2DJ_c&t=3669s&ab_channel=%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BB%D0%B5%D0%BD%D0%9C%D0%B8%D0%BD%D0%B8%D0%BD';
-//let myURL = 'localvideo/video1.mp4';
+let myURL2 = 'localvideo/video1.mp4';
 let myURL = 'https://www.youtube.com/watch?v=p1l4XeIsw70';
 let path = 'localvideo/'
 
-let localFile = new VideoHandlerYouTube(myURL, path);
+let globalFile = new VideoHandlerYouTube(myURL, path);
+let localFile = new VideoHandlerLocalFile(myURL2, path);
 
-localFile.getMinutes().then(data =>{
+console.log('Local file');
+localFile.minutes();
+
+console.log('Is youTybe');
+globalFile.getMinutes().then(data =>{
         console.log(data);
     }
 );
 
-//localFile.sendURLPathFile('http://192.168.33.129:8000');
+globalFile.download();
+
+globalFile._promiseFile.then(data=>{
+    console.log(data);
+});
+
+
 
 
