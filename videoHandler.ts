@@ -1,22 +1,23 @@
-import * as ytdl from 'ytdl-core';
 import getVideoDurationInSeconds from "get-video-duration";
 import * as fs from 'fs';
+import fetch from "node-fetch";
 
-export class VideoHandler {
-    _promiseFile: Promise<File> | null = null;
-    videoDuration: Promise<string>;
-    pathFile: string;
-    videoHostingName: string;
-    isDownload: boolean = false;
+export abstract class VideoHandler {
+    _promiseFile: Promise<string|Error> | null = null;
+    pathDownloadFile: string;
+    _pathToFile: string;
+    csvLink: string;
+    docLink: string;
 
-    constructor(link: string, type: string, path: string) {
-        this.videoDuration = this._getDuration(link, type);
-        this.pathFile = path;
+
+    protected constructor(link: string, path: string) {
+        this.pathDownloadFile = path;
+        this._pathToFile = link;
     }
 
     async minutes(): Promise<number> {
         try {
-            return await this.videoDuration.then(data => {
+            return await this.getDurationLocalFile().then(data => {
                 return Math.round((Number(data) / 60));
             });
         } catch (e) {
@@ -24,41 +25,40 @@ export class VideoHandler {
         }
     }
 
-    download(fileName: string) {
+    getFilePath(){
+        return this._pathToFile;
+    }
+
+    async getDurationLocalFile(): Promise<string> {
+
         try {
-            ytdl('http://www.youtube.com/watch?v=aqz-KE-bpKQ').pipe(fs.createWriteStream(this.pathFile + fileName));
+            return await getVideoDurationInSeconds(this._pathToFile).then((duration) => {
+                return String(duration);
+            });
         } catch (e) {
             console.log(((e as Error).message));
         }
     }
 
-    private getHostName(url: string) {
-        let reg = RegExp('^(?:https?:\\/\\/)?(?:www\\.)?((?:(?!www\\.|\\.).)+\\.[a-zA-Z0-9.]+)');
-        this.videoHostingName = reg.exec(url)[1];
+    sendURLPathFile(url: string) {
+        const body = JSON.stringify({path: this._pathToFile});
+        //process.env.CONST_URL
+        fetch(url + "/path-upload", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body
+        }).then(res => res.json()).then(json => {
+            console.log(json);
+            this.csvLink = json.csv_link;
+            this.docLink = json.doc_link;
+        })
+
     }
 
-    private async _getDuration(link: string, type: string): Promise<string> {
-        if (type == 'url') {
-            try {
-                this.getHostName(link);
-                if (this.videoHostingName == 'youtube.com') {
-                    let videoLink = ytdl.getBasicInfo(link);
-                    return await videoLink.then(data => {
-                        return data.videoDetails.lengthSeconds;
-                    });
-                }
-            } catch (e) {
-                console.log(((e as Error).message));
-            }
-        } else if (type == 'file') {
-            try {
-                this.isDownload = true;
-                return await getVideoDurationInSeconds(link).then((duration) => {
-                    return String(duration);
-                });
-            } catch (e) {
-                console.log(((e as Error).message));
-            }
-        }
+    deleteFile() {
+        fs.unlinkSync(this._pathToFile);
     }
+
 }
