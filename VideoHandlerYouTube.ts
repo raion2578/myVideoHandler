@@ -1,5 +1,5 @@
 import * as ytdl from 'ytdl-core';
-import {VideoHandler} from "./videoHandler";
+import {VideoHandler} from "./VideoHandler";
 import * as fs from 'fs';
 
 
@@ -48,8 +48,7 @@ export class VideoHandlerYouTube extends VideoHandler {
                         return(data);
                     }
                 );
-
-                ytdl('http://www.youtube.com/watch?v=aqz-KE-bpKQ').pipe(fs.createWriteStream(this.pathDownloadFile + fileName));
+                ytdl(this._pathToFile).pipe(fs.createWriteStream(this.pathDownloadFile + fileName));
                 resolve(String(this.pathDownloadFile + fileName));
             })
 

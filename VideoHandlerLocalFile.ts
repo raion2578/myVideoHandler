@@ -1,4 +1,4 @@
-import {VideoHandler} from "./videoHandler";
+import {VideoHandler} from "./VideoHandler";
 
 
 export class VideoHandlerLocalFile extends VideoHandler{

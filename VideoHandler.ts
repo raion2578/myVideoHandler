@@ -15,9 +15,10 @@ export abstract class VideoHandler {
         this._pathToFile = link;
     }
 
-    async minutes(): Promise<number> {
+    async getMinutes(): Promise<number> {
         try {
             return await this.getDurationLocalFile().then(data => {
+
                 return Math.round((Number(data) / 60));
             });
         } catch (e) {
@@ -30,7 +31,6 @@ export abstract class VideoHandler {
     }
 
     async getDurationLocalFile(): Promise<string> {
-
         try {
             return await getVideoDurationInSeconds(this._pathToFile).then((duration) => {
                 return String(duration);
