@@ -3,11 +3,11 @@ import * as fs from 'fs';
 import fetch from "node-fetch";
 
 export abstract class VideoHandler {
-    _promiseFile: Promise<string|Error> | null = null;
+    _promiseFile: Promise<string | Error> | null = null;
     pathDownloadFile: string;
     _pathToFile: string;
-    csvLink: string;
-    docLink: string;
+    private _csvLink: string;
+    private _docLink: string;
 
 
     protected constructor(link: string, path: string) {
@@ -26,7 +26,7 @@ export abstract class VideoHandler {
         }
     }
 
-    getFilePath(){
+    getFilePath() {
         return this._pathToFile;
     }
 
@@ -40,22 +40,27 @@ export abstract class VideoHandler {
         }
     }
 
-    sendURLPathFile(url: string) {
-        const body = JSON.stringify({path: this._pathToFile});
-        //process.env.CONST_URL
-        fetch(url + "/path-upload", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body
-        }).then(res => res.json()).then(json => {
-            console.log(json);
-            this.csvLink = json.csv_link;
-            this.docLink = json.doc_link;
-        })
+    async sendURLPathFile(url: string) {
+        try {
+            const body = JSON.stringify({path: this._pathToFile});
+            //process.env.CONST_URL
+            fetch(url + "/path-upload", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body
+            }).then(res => res.json()).then(json => {
+                console.log(json);
+                this._csvLink = json.csv_link;
+                this._docLink = json.doc_link;
+            });
+        } catch (e) {
+            throw e;
+        }
 
     }
+
 
     deleteFile() {
         fs.unlinkSync(this._pathToFile);

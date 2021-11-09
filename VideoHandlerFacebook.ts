@@ -1,5 +1,6 @@
 import {VideoHandler} from "./VideoHandler";
 import * as fbvideos from 'fbvideos';
+
 const Downloader = require('nodejs-file-downloader');
 
 export class VideoHandlerFacebook extends VideoHandler {
@@ -15,11 +16,12 @@ export class VideoHandlerFacebook extends VideoHandler {
             return vid.url;
         });
     }
+
     download() {
-        this.getUrlForDownload().then(data =>{
+        this.getUrlForDownload().then(data => {
             const downloader = new Downloader({
                 url: data,
-                directory: "./",
+                directory: this.pathDownloadFile,
             })
             downloader.download();
         });
