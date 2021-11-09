@@ -44,17 +44,17 @@ export abstract class VideoHandler {
         try {
             const body = JSON.stringify({path: this._pathToFile});
             //process.env.CONST_URL
-            fetch(url + "/path-upload", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body
-            }).then(res => res.json()).then(json => {
-                console.log(json);
-                this._csvLink = json.csv_link;
-                this._docLink = json.doc_link;
-            });
+                return await fetch(url + "/path-upload", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body
+                }).then(res => res.json()).then(json => {
+                    this._csvLink = json.csv_link;
+                    this._docLink = json.doc_link;
+                    return json;
+                });
         } catch (e) {
             throw e;
         }

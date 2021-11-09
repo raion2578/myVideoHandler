@@ -29,11 +29,12 @@ let localFile = new VideoHandlerLocalFile(myURL2, path);
 //     console.log(data);
 // });
 
- const video = 'https://www.facebook.com/dizelshow/videos/436342094086531';
+ //const video = 'https://www.facebook.com/dizelshow/videos/436342094086531';
 //
 // let faceb = new VideoHandlerFacebook(facebookURL4, path);
 // faceb.getUrlForDownload();
 //faceb.download();
 
+localFile.sendURLPathFile('http://192.168.33.129:8000/').then(console.log);
 
 
