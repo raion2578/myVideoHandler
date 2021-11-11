@@ -15,16 +15,16 @@ export abstract class VideoHandler {
         this._pathToFile = link;
     }
 
-    async getMinutes(): Promise<number> {
+    async minutes(): Promise<number> {
         try {
             return await this.getDurationLocalFile().then(data => {
-
                 return Math.round((Number(data) / 60));
             });
         } catch (e) {
             console.log(((e as Error).message));
         }
     }
+
 
     getFilePath() {
         return this._pathToFile;
@@ -44,17 +44,17 @@ export abstract class VideoHandler {
         try {
             const body = JSON.stringify({path: this._pathToFile});
             //process.env.CONST_URL
-                return await fetch(url + "/path-upload", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body
-                }).then(res => res.json()).then(json => {
-                    this._csvLink = json.csv_link;
-                    this._docLink = json.doc_link;
-                    return json;
-                });
+            return await fetch(url + "/path-upload", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body
+            }).then(res => res.json()).then(json => {
+                this._csvLink = json.csv_link;
+                this._docLink = json.doc_link;
+                return json;
+            });
         } catch (e) {
             throw e;
         }
@@ -63,7 +63,11 @@ export abstract class VideoHandler {
 
 
     deleteFile() {
-        fs.unlinkSync(this._pathToFile);
+        try {
+            fs.unlinkSync(this._pathToFile);
+        } catch (e) {
+            throw e;
+        }
     }
 
 }
