@@ -6,35 +6,32 @@ const {getInfo} = require('ytdl-getinfo');
 const YoutubeDlWrap = require("youtube-dl-wrap");
 const youtubeDlWrap = new YoutubeDlWrap("/usr/local/bin/youtube-dl");
 
-export class VideoHandlerFacebook extends VideoHandler {
+export class VideoHandlerURL extends VideoHandler {
     url: string;
     duration: Promise<number>;
+    fileName: string;
 
     constructor(link: string, path: string) {
         super(link, path);
         this.url = link;
     }
 
-    getUrlForDownload() {
-        return fbvideos.low(this.url).then(vid => {
-            return vid.url;
-        });
-    }
-
     async download() {
         try {
             this._promiseFile = new Promise(async (resolve, reject) => {
                 let name = await this.getName();
+                this.fileName = name + ".mp4";
                 let stdout = await youtubeDlWrap.execPromise([this.url,
-                    "-f", "best", "-o", name + ".mp4"]);
+                    "-f", "best", "-o", this.pathDownloadFile + this.fileName]);
                 resolve(name + ".mp4");
+                return (this.fileName);
             });
-        }catch (e){
+        } catch (e) {
             throw  e;
         }
     }
 
-    async getName():Promise<string>{
+    async getName(): Promise<string> {
         try {
             return await getInfo(this.url).then(info => {
                 return info.items[0].id;
@@ -47,8 +44,7 @@ export class VideoHandlerFacebook extends VideoHandler {
     async minutes(): Promise<number> {
         try {
             return await getInfo(this.url).then(info => {
-                console.log(info);
-                return Math.round(Number(info.items[0].duration)/60);
+                return Math.round(Number(info.items[0].duration) / 60);
             });
         } catch (e) {
             console.log(((e as Error).message));
