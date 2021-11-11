@@ -1,7 +1,5 @@
 import {VideoHandler} from "./VideoHandler";
-import * as fbvideos from 'fbvideos';
 
-const Downloader = require('nodejs-file-downloader');
 const {getInfo} = require('ytdl-getinfo');
 const YoutubeDlWrap = require("youtube-dl-wrap");
 const youtubeDlWrap = new YoutubeDlWrap("/usr/local/bin/youtube-dl");
@@ -37,7 +35,7 @@ export class VideoHandlerURL extends VideoHandler {
                 return info.items[0].id;
             });
         } catch (e) {
-            console.log(((e as Error).message));
+            throw e;
         }
     }
 
@@ -47,7 +45,7 @@ export class VideoHandlerURL extends VideoHandler {
                 return Math.round(Number(info.items[0].duration) / 60);
             });
         } catch (e) {
-            console.log(((e as Error).message));
+            throw e;
         }
     }
 
